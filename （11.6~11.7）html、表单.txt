@@ -1,0 +1,68 @@
+11月6日–11月7日  学习内容：前端的基本知识，了解html，学习html标签，表格，表单
+1、	html(HyperText Markup Language)超文本标记语言
+2、	用户上网原理：
+- 浏览器是html的查看器
+- 上网——请求数据
+- 后台服务器收到用户请求后，返回页面给浏览器解析
+- 浏览器收到服务器返回的信息后，下载需要的资源，整合并显示
+- BS（Browser And Server）两端的通信是通过HTTP协议进行数据传输的
+总结:上网即数据请求、数据相应、文件传输、资源整合显示
+3、	<!doctype html> (Document Type HyperText Mark-up Language)
+告知浏览器该网页使用的规范为html5，所有浏览器统一采用标准模式，按照W3C标准解析渲染该页面。避免不同浏览器使用自身标准解析渲染页面
+4、<meta>标签
+- <meta charset=”utf-8”> 设置网页的编码格式为utf-8,该编码格式支持简体中文
+- <meta http-equiv=”refresh”content=”5;http://www.baidu.com”>
+	- refresh属性值用于刷新与跳转页面
+	- refresh 出现在http-equiv 属性中
+- content = ”5;http://www.baidu.com”中“5”代表5秒后刷新或跳转，分号后代表跳转到的目标网址
+5、<sub> 下标标签  <sup> 上标标签
+6、ol 有序列表
+- type属性 <ol type=”A”>，改变序号方式（1（默认）、I（大写罗马数字）、i（罗马数字小写）、A、a）
+- start属性<ol start=”99”>,使序号从99开始排序
+7、dl（definition list）定义列表、dt 定义标题、dd定义描述；ol ul标签内部只能放li标签，dl标签只能放dt、dd标签
+8、a标签
+- <a target=”_blank”>在新的标签页打开跳转的网页
+- 锚点：用name属性在网页某处定义一个锚点 <a name=”aaa”>锚点</a>跳转指令:<a href=”#aaa”>点击这里</a>(同一网页内)，<a href=”***.html#aaa”>点击这里</a>(跳转至外部网站)
+9、表格
+- <table>表格标签、<tr>行标签、<th>表头标签字体加深居中、<td>表格内容列标签
+- <table>标签属性
+- border属性：设置表格所有边框；
+- bordercolor属性：设置边框颜色；
+- bgcolor属性：设置表格背景颜色；
+- width、height属性：设置表格整体宽度和高度
+- cellspacing属性:单元格与单元格之间的距离，取0可取消默认值
+- cellpadding属性：表格与内部内容的距离，如果规定表格宽度则无效
+- <caption>标签，定义标题放在<table>内，<tr>前
+- <td>标签属性
+- rowspan 合并同一列中，相邻的内容相同的行为同一单元格
+- colspan 合并同一行中，相邻的内容相同的列为同一单元格
+10、form表单
+(1)<form>标签属性
+- action属性：规定表单提交的地址(相对路径或者绝对路径)
+- method属性：定义表单的提交方式
+- get方法：数据会被暴露在url路径中(默认),提交的数据很少
+	- post方法：数据会被携带在http请求的请求体中,提交的数据相对较多
+使用浏览器自带开发者工具中的network监视post请求
+- title属性：给用户显示提示信息
+(2)表单控件
+- <input type="text">						用来输入文本
+- <input type="password">				用来输入密码
+- <input type="submit" value="提交">	用来提交表单
+- <button> 标签，可设置按钮单纯不能提交数据给服务器，外形和submit一样
+- <input type="radio" name="sex">    用来定义单选按钮，多个单选按钮的name属性值一样时，只能选中其一
+- <input type="checkbox">          复选框，可以多选，可设置checked属性让其默认选中
+- <select> <option></option> <option></option></select> 下拉菜单，有几个选项就定义几个option
+- <textarea rows="10" cols="30"></textarea>     多行文本输入框
+- <input type="reset" value="重置">   	清空表单内容，还原为初始值
+- <input type="image" src="img/2.jpg" alt="图片加载失败">   将提交按钮设置为一张图片，效果和submit一样
+- <input type="email">  当用户输入的内容不是一个邮箱时，会展示提示信息，并且会阻止整个表单的提交
+- H5提出的两个新控件：
+	- <input type="color">          颜色
+	- <input type="date">           日期
+(3)控件属性
+- 必须添加name属性，才能成键值对（键值对：根据一个键值获得对应的值，例如用户名对应用户ID，password对应用户密码）的形式提交到action所指示的地址。
+- value属性用来设置单选按钮或者复选框提交到action所指示的地址的值，而不再是原先的on。也可以设置初始值（只能用于某些控件）
+- size属性控制表单控件的长度。
+- maxlength属性控制输入文本的长度
+- readonly属性控制输入文本不允许用户输入
+
