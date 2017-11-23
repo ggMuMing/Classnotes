@@ -1,0 +1,185 @@
+一、创建对象
+
+1、工厂模式
+	
+	var obj = new Object();
+		obj.name = name;
+		obj.age = age;
+		obj.sayName = function() {
+			return this.name;
+		}
+		return obj;
+	}
+
+	var person1 = createPerson("bi",12);
+	var person2 = createPerson("li",13);
+
+	console.log(person1.sayName());
+
+- 工厂模式解决了创建多个相似对象的问题，但没有解决对象的识别问题
+
+2、构造函数模式
+
+	function Person(name,age) {
+		this.name = name;
+		this.age = age;
+		this.sayName = function() {
+		    return this.name;
+		};
+	}
+
+	var student = new Person("aaa",18);
+	var worker = new Person("ccc",20);
+
+	console.log(student.sayName());
+	console.log(worker.sayName());
+	
+- 构造函数模式：
+	- ECMAScript中的构造函数可用来创建特定类型的对象。像Array这样的原生构造函数，在运行时会自动出现在执行环境中。
+	可以创建自定义的构造函数，从而定义自定义对象类型的属性和方法。
+	- 通过new Person()创建了Person类型的对象（实例）。person1和person2这两个对象都有一个construcor（构造函数）属性，该属性指向Person。
+	constructor属性作用用来标识对象类型的。创建自定义的构造函数意味着可以将它的实例标识为一种特定的类型。
+	- 构造函数与其他函数唯一的区别在于其调用方式不同。任何函数只要通过new操作符来调用，那它就可以作为构造函数；除此之外没有什么不同。
+构造函数模式的缺点：
+	- 主要问题：每个方法都要在每个实例上重新创建一遍。
+	- 解决方法：把方法的函数定义转移到构造函数外部来解决这个问题。
+	
+	function Person(name,age) {
+		this.name = name;
+		this.age = age;
+		this.sayName = sayName;
+	}
+
+	function sayName() {
+		return this.name;
+	}
+
+	var student = new Person("aaa",18);
+	var worker = new Person("ccc",20);
+
+	console.log(student.sayName());
+	console.log(worker.sayName());
+	
+	- 新问题：在全局作用域中定义的函数可以被任何对象调用，然而在当前情况下，只有我们定义的构造函数对象调用。
+	另外，如果对象需要定义很多方法，那么就要定义很多个全局函数，于是我们这个自定义的引用类型将毫无封装性可言。
+	- 封装：隐藏内部的实现细节、对外暴露公有的访问方式。
+	
+3、原型模式
+
+- 创建的每个函数都有一个prototype（原型）属性，这个属性是一个指针，指向一个对象（prototype Object），这个对象包含了一些属性和方法，
+对于构造函数而言，特定类型的所有实例都可以使用这些属性和方法。
+
+	function Person (name,age,gender){
+		this.name = name;
+		this.age = age;
+		this.gender = gender;
+	}
+
+	Person.prototype.getGender = function() {
+		alert(this.gender);
+	}
+
+	var student = new Person("ccc",15,"man");
+
+     student.getGender();
+	alert(student.hasOwnProperty("gender"));
+
+	- 使用原型对象的好处是可以让所有对象实例共享它所包含的属性和方法。即不必在构造函数中定义对象实例的信息，而是可以将这些信息直接添加到原型对象中
+	- 无论什么时候，只要创建一个新函数，就会根据一组特定的规则为该函数创建一个prototype属性，这个属性指向函数的原型对象。
+	所有原型对象都会自动获得一个constructor（构造函数）属性，指向prototype属性所在的函数。通过这个构造函数，还可以继续为原型对象添加其他属性和方法。
+	- 通过构造函数创建的特定类型的实例（对象）都不可以访问其内部的[[Prototype]]。
+	
+	- (Object.prototype).isPrototypeOf(student) : 类型函数的原型是不是student的原型。
+	- Object.getPrototypeOf(student).name : 返回指定对象的原型（内部[[prototype]]的值）。
+	- student.hasOwnProperty("name")方法会返回一个布尔值，指示对象是否具有指定的属性作为自身（不继承）属性。
+	
+- 原型模式的工作原理：
+	每当代码读取某个对象的某个属性或方法时，都会执行一次搜索，目标是该属性或方法。搜索首先从对象实例本身开始。如果在实例中找到了具有给定名字的属性，
+则返回该属性的值；如果没有找到，则继续搜索实例本身的[[prototype]]指向的原型对象，在原型对象中查找具有给定名字的属性。
+	虽然可以通过对象实例访问保存在原型中的值，但却不能通过对象实例重写原型中的值。如果我们在实例中添加了一个属性，而该属性与实例原型中的一个属性同名，
+那么我们就在实例中创建该属性，该属性会屏蔽原型中的那个属性。
+	（前面这句话可以理解为，实例对象通过[[Prototype]]指针访问构造函数的原型对象的地址，从而访问并返回其中的值，但是实例是不能更改原型对象中的值的。
+因此，如果出现同名属性，则相当于实例自身创建了一个同名属性，在原型链中，会优先搜索对象内部的属性）
+
+- in的单独使用方法
+	in操作符会通过对象能够访问给定属性时返回true，无论该属性存在于实例中还是原型中。例如：alert(''name" in student); //true
+	
+- 要取得对象上所有可枚举的属性，可以使用Object.keys()方法。该方法接收一个对象作为参数，返回一个包含所有可枚举的字符串数组。
+如果你想得到所有实例属性，无论它是否可以枚举，都可以使用Object.getOwnPropertyNames()方法。
+
+- 简化原型对象
+	Person.prototype = {
+		name : "ming",
+		age:22,
+		hobby:reading
+	};
+	上面代码中，我们将Person.prototype设置为等于一个以对象字面量形式创建的新对象。本质上完全重写了默认的prototype对象，
+因此constructor属性也就变成了新对象的constructor属性，不再指向Person函数。尽管instanceof操作符还能返回正确的结果，但通过constructor已经无法确定对象的类型了。
+推荐解决办法：
+		Person.prototype = {
+			constructor : Person;
+		};
+		
+- 原型的动态性
+	- 对原型对象所做的任何修改都能够立即从实例上反应出来——即使是先创建了实例后修改原型也照样如此。因为属性的查找的都是一次查找的过程。
+	- 调用构造函数时会为实例添加一个指向（最初原型的）[[Prototype]]指针，而把原型修改为另外一个对象就等于切断了构造函数与最初原型之间的联系。
+	
+- 原生模式与原型
+	所有原生的引用类型，都是采用原型模式创建的。通过原生对象的模型，不仅可以取得所有默认方法的引用，而且也可以定义新的方法。
+可以修改自定义对象的模型一样修改原生对象的原型，因此可以随时添加方法。
+
+4、组合使用构造函数模式与原型模式
+使用最广泛、认同度最高的一种创建自定义类型的方法。
+
+5、其他模式
+- 动态原型模式
+- 寄生构造函数模式
+- 稳妥构造函数模式
+
+二、继承
+
+1、继承：
+	ECMAScript只支持实现继承，主要依靠原型链来实现继承。
+
+2、原型链：
+	- 所有引用类型默认都继承了Object，而这个继承也是通过原型链实现的，而所有函数的默认原型都会包含一个内部指针，指向Object.prototype。
+	因此自定义类型都会继承toString()、valueOf()等默认方法的根本原因。
+	- 两种确定原型和实例之间的关系：
+		- 使用instanceof操作符，只要用这个操作符来测试实例与原型链中出现过的构造函数，结果就会返回true。
+		在原型链中，构造函数只要处于实例上方，都会返回true。
+		- isPrototypeOf()方法，处理方式和结果与上面一种方法相同。
+	- 子类型有时候需要重写超类型（父类型），或者需要添加超类型中不存在的某个方法。但不管怎么样，给原型添加方法的代码一定要放在替换原型的语句之后。
+	- 原型链存在的问题：
+		- 原型对象中的引用数据类型被子类对象继承
+		- 在创建子类型的实例时，不能向超类型的构造函数中传递参数。
+		解决方法：
+		function Super(money) {
+			this.money = money;
+		}
+		function Sub(money) {
+			Super.call(this.money);
+		}
+		var instance =new Sub(1000);
+		- 借用构造函数
+			- 在子类型构造函数的内部调用超类型构造函数。函数只不过是在特定环境中执行代码的对象，通过使用apply和call方法也可以在新创建的对象上执行构造函数。
+			- 优势：可以在子类型构造函数中向超类型构造函数传递参数
+			- 缺点：超类型的原型中定义的方法，对子类型而言也是不可见的，结果所有类型都只能使用构造函数模式。超类型中只有在构造函数中定义的方法子类型才能继承，并且方法不能被调用。
+3、组合继承
+	最常用的继承模式
+		function SuperType(name) {
+            this.name = name;
+        }
+
+        SuperType.prototype.getName = function() {
+            alert(this.name);
+        }
+        function SubType(name,age) {
+            SuperType.call(this.name);
+            this.age = age;
+        }
+        SubType.prototype = new SuperType();
+        SubType.prototype.constructor = SubType;
+        SubType.prototype.getAge = function() {
+            alert(this.age);
+        }
+
