@@ -1,0 +1,102 @@
+一、基本概念
+
+- 节点属性
+- DOM是针对针对HTML和XML文档的一个API（应用程序编程接口），DOM描绘了一个层次化的节点树，允许开发人员添加、移除和修改页面的某一部分。
+- 节点层次：
+	- 文档节点是每个文档的根节点。<html>元素是文档节点的一个子节点。我们称html元素为文档元素。文档元素是文档的最外层元素，文档中的其他所有元素都包含在文档元素中。
+	每个文档只能由一个文档元素。在html页面中，文档元素始终搜是html元素。
+- 节点类型：
+	- Javascript中共有12种节点类型，都继承自Node类型，所有节点类型都共享着相同的基本属性和方法。
+		一般地，节点至少拥有nodeType、nodeName、nodeValue这三个基本属性。节点类型不同，这三个属性的值也不相同。
+	- nodeType：
+		- nodeType属性返回节点类型的常数值。IE没有公开Node类型的构造函数，因此在IE中使用数字代替
+	- nodeName、nodeValue：
+	这两个属性的值完全取决于节点的类型。
+- 节点关系：
+	- 每个节点都有一个childNodes（子节点）属性，其中保存着NodeList对象。包含在childNodes列表中每个节点互相为同胞节点。可以用prebiousSibling和nextSibling属性访问。
+	- NodeList：一种类数组对象，用于保存一组有序的节点，可以通过位置访问来访问这些节点。可以通过方括号访问内部的值，有length属性。
+	是基于DOM结构  动态  查询的结果。
+	- ParentNode：每个节点都有一个parentNode属性，该属性指向文档树中的父节点。
+	- hasChildNodes()：在节点包含一个或者多个子节点时返回true。
+- 操作节点
+	- appendChild()
+		- 作用：用于向childNodes列表的末尾添加一个节点。		添加节点后，childNodes的新增节点、父节点及以前的最后一个子节点的关系指针都会相应得到更新。
+		更新完毕后，appendChild()返回新增的节点。  childNodes.length长度动态变化。
+		- 如果传入到appendChild()中的节点已经是文档的一部分，那结果就是将该节点从原来的位置转移到新位置。
+	- insertBefore()
+		- 把节点放在childNodes列表中某个特定位置。
+		var insertedElement = parentElement.insertBefore(newElement, referenceElement);
+		如果referenceElement为null则newElement将被插入到子节点的末尾。如果newElement已经在DOM树中，newElement首先会从DOM树中移除。
+			- insertedElement 是被插入的节点，即 newElement
+			- parentElement  是新插入节点的父节点
+			- newElement 是被插入的节点，新插入的节点
+			- referenceElement 在插入newElement之前的那个节点
+	- replaceChild()
+		- 接受两个参数：要插入的节点和要替换的节点。要替换的节点将由这个方法返回并从文档树中被移除，同时要插入的节点占据其位置。
+	- removeChild()
+		- 移除节点，被移除的节点将成为方法的返回值。
+	- cloneNode()
+		- 接受一个布尔值参数。true时，执行深复制，复制节点及其整个子节点树；false时，只复制节点本身。
+	- normalize()
+		- 处理文档树中的文本节点。如果出现了空文本节点，则删除空文本节点。如果找到相邻的文本节点，则将它们合并为一个文本节点。
+		
+二、Document类型
+- 节点特征
+	- JavaScript通过Document类型来表示文档。在浏览器中，document对象是HTMLDocument（继承自Document类型）的一个实例，表示整个HTML页面。
+	document对象是window对象的一个属性，因此可以将其作为全局兑现来表示。
+	- 特征：
+		nodeType：9；                  nodeName 的值：#document；               nodeValue：null                       parentValue：null；         ownerDocument：null
+- 文档子节点
+	- DocumentType、Element、ProcessingInstruction或Comment。内置两个访问其子节点的快捷方式：documentElement属性、通过childNodes列表访问文档元素
+	- document对象还有一个body属性，直接指向body元素。document.body
+- 文档信息
+	- 三个与对网页请求有关的属性：URL、domain和referrer
+	URL包含完整URL、domain只包含页面的域名、referrer属性保存链接到当前页面之前的页面
+- 	查找元素
+	- getElementById：只能通过根节点调用 
+	- getElementsByTagName：返回的值是包含零或多个元素的NodeList。在HTML文档中，这个方法会返回一个HTMLCollection对象，
+	作为一个动态集合，该对象与NodeList非常类似。
+	- HTMLCollection对象还有一个方法 namedItem() ，使用这个方法可以通过元素的name特性取得集合中的项。三种表示方法：
+	var myImage = images.namesItem('myImage');                      var myImage = images['myImage'];            
+	第三个方法只有HTMLDocument类型才有的方法，是getElementsByName()
+- 文档写入
+	write、writeIn（会在字符串的末尾添加一个换行符）、open、close
+	
+三、Element类型
+- 节点特征
+	- 用于变现XML或HTML元素，提供了元素标签名、子节点及特性的访问
+	- 特征：
+		nodeType：1；                  nodeName 的值：元素的标签名；               nodeValue：null                 parentValue：Document或Element；  
+		要访问元素的标签名，可以使用nodeName属性，也可以使用tagName属性；这两个属性会返回相同的值。
+- 获取元素属性
+	- 每个元素都有一个或多个特性，这些特性的用途是给出相应元素或其内容的附加信息。
+	- 获取元素属性getAttribute()：传递给getAttribute()的特性名与实际的特性名相同。因此想要得到class特性值，应该传入“class”而不是“className”，
+		后者只有通过对象属性访问特性时采用，如果给定名称的特性不存在，会返回null。还可以取得自定义特性的值。
+		特性的名称是不区分大小写的，即ID和id代表的都是同一个特性。任何元素的所有特性，也可以通过DOM本身的属性来访问。
+		HTMLElement也会有5个属性与相应的特性一一对应。不过，只有公认的（非自定义的）特性才会以属性的形式添加到DOM对象中。
+		两类特殊的特性：style、onclick 他们虽然有对应的属性名，但属性的值与通过getAttribute返回的值并不相同。
+	- 设置元素属性setAttritube()：接受两个参数：要设置的特性名和值，如果特性已经存在，会以指定的值替换现有的值；如果特性不存在，则创建该属性并设置值
+	- removeAttribute彻底删除元素的特性
+- attributes属性
+	-Element类型是使用attributes属性的唯一一个DOM节点类型。attributes属性中包含一个NamedNodeMap，与NodeList类似，也是一个动态集合。
+	元素的每一个特性都由一个Attr节点表示，每个节点都保存在NamedNodeMap对象中。NamedNodeMap对象方法：
+		- getNamedItem(name):返回nodeName属性等于name的节点；                       removeNamedItem(name)；从列表中移除nodeName属性等于name的节点；
+		   setNamedItem(node):向列表中添加节点，以节点的nodeName属性为索引                   item（pos）：返回位于数字pos位置的节点
+	- attributes属性中包含一系列节点，每个节点的nodeName就是特性的名称，而节点的nodeValue就是特殊的值。
+	- removeNamedItem方法与removeAttritubute方法效果相同，唯一不同前者返回表示被删除特性的Attr节点。
+	- specified属性，每个特性节点都有一个名为specified的属性，这个属性的值如果为true，意味着要么是在HTML中指定了相应特性，
+	要么是通过setAttribute方法设置了该属性。
+	- document.createElement方法创建新的元素
+	
+四、Text类型
+- 节点特征
+	- nodeType：3；                  nodeName 的值：#text；               nodeValue：节点包含的文本                      parentValue：Element；         
+	- appendData（text）：添加到节点末尾      deleteData(offset,count)从offset指定的位置开始删除count个字符    insertData(offset,text)
+	replaceData(offset,count,text)    splitText(offset) 从offset指定位置将当前文本节点分成两个文本节点     subStringData(offset,count): 提取从offset指定的位置开始，共count个文本
+- 创建文本节点：
+	- document。createTextNode()创建新文本节点
+五、Attr类型
+- 节点特征
+	- nodeType：2；                  nodeName 的值：特性的名称；               nodeValue：特性的值                     parentNode的值：null   在HTML中不支持（没有）子节点
+	- getAttribute  setAttribute removeAttribute
+六、操作表格
